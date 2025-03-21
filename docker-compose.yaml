@@ -1,0 +1,49 @@
+version: "3.6"
+
+services:
+  # Redis cache
+  cache-redis:
+    image: redis:7.4.1-alpine3.20
+    ports:
+      - 37738:${REDIS_PORT:?}
+    env_file:
+      - .env
+    command: redis-server
+    networks:
+      - bacalagi-be
+    volumes:
+      - cache-data:/data
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 100M
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - .env
+    ports:
+      - ${REST_API_APP_PORT:?}:${REST_API_APP_PORT:?}
+    depends_on:
+      - cache-redis
+    networks:
+      - bacalagi-be
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "1"
+          memory: 500M
+
+volumes:
+  cache-data:
+
+networks:
+  bacalagi-be:
+    driver: bridge
+    external: true

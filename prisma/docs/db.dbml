@@ -1,0 +1,183 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table books {
+  id String [pk]
+  title String [not null]
+  author String [not null]
+  publisher String
+  publishYear String
+  isbn String
+  language String
+  buyPrice Int [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  predictionResult prediction_results
+  post posts
+}
+
+Table prediction_results {
+  id String [pk]
+  percentage Float [not null]
+  wornOutRatio Float [not null]
+  rippedRatio Float [not null]
+  overallRatio Float [not null]
+  buyPrice Int [not null]
+  recommendPrice Int [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  bookId String [unique]
+  book books
+}
+
+Table posts {
+  id String [pk]
+  image String [not null]
+  content String [not null]
+  price Int [not null]
+  status PurchaseStatus [not null, default: 'AVAILABLE']
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  bookId String [unique]
+  userId String
+  book books
+  user users
+  comment comments [not null]
+  reactions reactions [not null]
+}
+
+Table comments {
+  id String [pk]
+  content String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  userId String
+  postId String
+  user users
+  post posts
+  commentReply comment_replies [not null]
+  reactions reactions [not null]
+}
+
+Table comment_replies {
+  id String [pk]
+  content String [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  userId String
+  commentId String
+  comment comments
+  user users
+  reactions reactions [not null]
+}
+
+Table reactions {
+  id String [pk]
+  userId String [not null]
+  entityType EntityType [not null]
+  reaction ReactionType [not null]
+  commentReplyId String
+  commentId String
+  postId String
+  commentReply comment_replies
+  comment comments
+  post posts
+  user users [not null]
+
+  indexes {
+    (userId, postId, commentId, commentReplyId, entityType) [unique]
+  }
+}
+
+Table accounts {
+  id String [pk]
+  email String [unique, not null]
+  password String
+  googleTokenId String [unique]
+  refreshToken String [unique]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  user users
+}
+
+Table profiles {
+  id String [pk]
+  name String [not null]
+  image String
+  bio String
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  user users
+}
+
+Table users {
+  id String [pk]
+  username String [unique, not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  accountId String [unique]
+  profileId String [unique]
+  account accounts
+  profile profiles
+  geolocation geolocations
+  post posts [not null]
+  comment comments [not null]
+  commentReply comment_replies [not null]
+  reactions reactions [not null]
+}
+
+Table geolocations {
+  id String [pk]
+  latitude Float
+  longitude Float
+  city String
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  userId String [unique]
+  user users
+}
+
+Enum ReactionType {
+  UPVOTE
+  DOWNVOTE
+}
+
+Enum EntityType {
+  POST
+  COMMENT
+  REPLY
+}
+
+Enum PurchaseStatus {
+  AVAILABLE
+  SOLD
+}
+
+Ref: prediction_results.bookId - books.id [delete: Cascade]
+
+Ref: posts.bookId - books.id [delete: Cascade]
+
+Ref: posts.userId > users.id [delete: Cascade]
+
+Ref: comments.userId > users.id [delete: Cascade]
+
+Ref: comments.postId > posts.id [delete: Cascade]
+
+Ref: comment_replies.commentId > comments.id [delete: Cascade]
+
+Ref: comment_replies.userId > users.id
+
+Ref: reactions.commentReplyId > comment_replies.id
+
+Ref: reactions.commentId > comments.id
+
+Ref: reactions.postId > posts.id
+
+Ref: reactions.userId > users.id
+
+Ref: users.accountId - accounts.id [delete: Cascade]
+
+Ref: users.profileId - profiles.id [delete: Cascade]
+
+Ref: geolocations.userId - users.id [delete: Cascade]

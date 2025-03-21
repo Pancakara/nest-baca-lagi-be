@@ -1,0 +1,46 @@
+// -----------------------------------------------------------------
+// Book Model
+// -----------------------------------------------------------------
+model Book {
+  id String @id @default(uuid())
+
+  title       String
+  author      String
+  publisher   String?
+  publishYear String?
+  isbn        String?
+  language    String?
+  buyPrice    Int
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  predictionResult PredictionResult?
+  post             Post?
+
+  @@map("books")
+  @@schema("book")
+}
+
+// -----------------------------------------------------------------
+// PredictionResult Model
+// -----------------------------------------------------------------
+model PredictionResult {
+  id String @id @default(uuid())
+
+  percentage     Float
+  wornOutRatio   Float
+  rippedRatio    Float
+  overallRatio   Float
+  buyPrice       Int
+  recommendPrice Int
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  bookId String? @unique
+  book   Book?   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("prediction_results")
+  @@schema("book")
+}

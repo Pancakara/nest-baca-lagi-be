@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema", "relationJoins", "prismaSchemaFolder"]
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["user", "book", "post"]
+}
+
+generator typescriptInterfaces {
+  provider          = "prisma-generator-typescript-interfaces"
+  output            = "../../commons/contracts/entities/prisma.entity.interface.ts"
+  prettier          = true
+  optionalNullables = true
+  modelPrefix       = "I"
+  modelSuffix       = "Entity"
+  enumSuffix        = "Enum"
+  enumType          = "stringUnion"
+}
+
+generator dbml {
+  provider   = "prisma-dbml-generator"
+  output     = "../docs"
+  outputName = "db.dbml"
+}
+
+generator kysely {
+    provider = "prisma-kysely"
+    output = "../../commons/contracts/entities"
+    fileName = "kysely.entity.interface.ts"
+    enumFileName = "kysely.enums.ts"
+}

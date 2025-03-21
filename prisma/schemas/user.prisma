@@ -1,0 +1,85 @@
+// -----------------------------------------------------------------
+// Account Model
+// -----------------------------------------------------------------
+model Account {
+  id            String  @id @default(uuid())
+  email         String  @unique
+  password      String?
+  googleTokenId String? @unique
+  refreshToken  String? @unique
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  user User?
+
+  @@index([email], name: "idx_accounts_email")
+  @@index([googleTokenId], name: "idx_accounts_google_token_id")
+  @@map("accounts")
+  @@schema("user")
+}
+
+// -----------------------------------------------------------------
+// Profile Model
+// -----------------------------------------------------------------
+model Profile {
+  id String @id @default(uuid())
+
+  name  String
+  image String?
+  bio   String?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  user User?
+
+  @@map("profiles")
+  @@schema("user")
+}
+
+// -----------------------------------------------------------------
+// User Model
+// -----------------------------------------------------------------
+model User {
+  id       String @id @default(uuid())
+  username String @unique
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  accountId String? @unique
+  profileId String? @unique
+
+  account Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  profile Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  geolocation  Geolocation?
+  post         Post[]
+  comment      Comment[]
+  commentReply CommentReply[]
+  reactions    Reaction[]
+
+  @@map("users")
+  @@schema("user")
+}
+
+// -----------------------------------------------------------------
+// Geolocation Model
+// -----------------------------------------------------------------
+model Geolocation {
+  id String @id @default(uuid())
+
+  latitude  Float?
+  longitude Float?
+  city      String?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("geolocations")
+  @@schema("user")
+}

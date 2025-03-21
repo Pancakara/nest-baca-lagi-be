@@ -1,0 +1,119 @@
+// -----------------------------------------------------------------
+// Post Model
+// -----------------------------------------------------------------
+model Post {
+  id String @id @default(uuid())
+
+  image   String
+  content String         @db.Text
+  price   Int
+  status  PurchaseStatus @default(AVAILABLE)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  bookId String? @unique
+  userId String?
+
+  book Book? @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comment   Comment[]
+  reactions Reaction[]
+
+  @@map("posts")
+  @@schema("post")
+}
+
+// -----------------------------------------------------------------
+// Comment Model
+// -----------------------------------------------------------------
+model Comment {
+  id String @id @default(uuid())
+
+  content String @db.Text
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  userId String?
+  postId String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  commentReply CommentReply[]
+  reactions    Reaction[]
+
+  @@map("comments")
+  @@schema("post")
+}
+
+// -----------------------------------------------------------------
+// CommentReply Model
+// -----------------------------------------------------------------
+model CommentReply {
+  id String @id @default(uuid())
+
+  content String @db.Text
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  userId    String?
+  commentId String?
+
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id])
+
+  reactions Reaction[]
+
+  @@map("comment_replies")
+  @@schema("post")
+}
+
+// -----------------------------------------------------------------
+// Reaction Model
+// -----------------------------------------------------------------
+model Reaction {
+  id         String       @id @default(uuid())
+  userId     String
+  entityType EntityType
+  reaction   ReactionType
+
+  // user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentReplyId String?
+  commentId      String?
+  postId         String?
+
+  commentReply CommentReply? @relation(fields: [commentReplyId], references: [id])
+  comment      Comment?      @relation(fields: [commentId], references: [id])
+  post         Post?         @relation(fields: [postId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+
+  @@unique([userId, postId, commentId, commentReplyId, entityType])
+  @@map("reactions")
+  @@schema("post")
+}
+
+enum ReactionType {
+  UPVOTE
+  DOWNVOTE
+
+  @@schema("post")
+}
+
+enum EntityType {
+  POST
+  COMMENT
+  REPLY
+
+  @@schema("post")
+}
+
+enum PurchaseStatus {
+  AVAILABLE
+  SOLD
+
+  @@schema("post")
+}

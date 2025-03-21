@@ -1,0 +1,28 @@
+{
+    "data": [
+        {
+            "email": "devuser@bacalagi.com",
+            "username": "devuser"
+        },
+        {
+            "email": "testuser1@bacalagi.com",
+            "username": "testuser1"
+        },
+        {
+            "email": "testuser2@bacalagi.com",
+            "username": "testuser2"
+        },
+        {
+            "email": "testuser3@bacalagi.com",
+            "username": "testuser3"
+        },
+        {
+            "email": "testuser4@bacalagi.com",
+            "username": "testuser4"
+        },
+        {
+            "email": "testuser5@bacalagi.com",
+            "username": "testuser5"
+        }
+    ]
+}

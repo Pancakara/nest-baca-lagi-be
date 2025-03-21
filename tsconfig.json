@@ -1,22 +1,74 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "strict": true,
+    "module": "NodeNext",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "resolveJsonModule": true,
+    "paths": {
+      "@config/app-cache": [
+        "libs/app-cache/src"
+      ],
+      "@config/app-cache/*": [
+        "libs/app-cache/src/*"
+      ],
+      "@config/app-config": [
+        "libs/app-config/src"
+      ],
+      "@config/app-config/*": [
+        "libs/app-config/src/*"
+      ],
+      "@contract": [
+        "commons/contracts"
+      ],
+      "@contract/*": [
+        "commons/contracts/*"
+      ],
+      "@database/prisma": [
+        "libs/prisma/src"
+      ],
+      "@database/prisma/*": [
+        "libs/prisma/src/*"
+      ],
+      "@firebase/firebase": [
+        "libs/firebase/src"
+      ],
+      "@firebase/firebase/*": [
+        "libs/firebase/src/*"
+      ],
+      "@infrastructue": [
+        "commons/infrastructures"
+      ],
+      "@infrastructue/*": [
+        "commons/infrastructures/*"
+      ],
+      "@s3storage/s3storage": [
+        "libs/s3storage/src"
+      ],
+      "@s3storage/s3storage/*": [
+        "libs/s3storage/src/*"
+      ],
+      "@util": [
+        "commons/utils"
+      ],
+      "@util/*": [
+        "commons/utils/*"
+      ]
+    }
   }
 }
